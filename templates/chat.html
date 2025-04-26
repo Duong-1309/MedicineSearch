@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Thuốc</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6eaff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+        
+        .filter-section {
+            background-color: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 16px 24px;
+        }
+        
+        .filter-title {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .classification-filters, .form-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .search-section {
+            padding: 24px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .labels-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .label-tag {
+            background-color: #eef2ff;
+            color: #4f46e5;
+            border: 1px solid #e0e7ff;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .label-tag:hover {
+            background-color: #e0e7ff;
+        }
+        
+        .label-tag.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        
+        .search-button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-button:hover {
+            background-color: #4338ca;
+        }
+        
+        .results-section {
+            padding: 0 24px 24px 24px;
+        }
+        
+        .results-title {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        @media (min-width: 640px) {
+            .results-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .medication-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .medication-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .med-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px; /* Prevent shrinking */
+            background-color: #eef2ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Make sure image stays inside circle */
+        }
+        
+        .med-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Make sure the image fills and keeps its aspect */
+            border-radius: 50%;
+        }
+        
+        .med-info {
+            margin-left: 16px;
+            flex-grow: 1;
+        }
+        
+        .med-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 16px;
+        }
+        
+        .med-category {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        
+        .med-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .detail-value {
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .prescription-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .prescription-yes {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+        
+        .prescription-no {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+        
+        .details-button {
+            color: #4f46e5;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .details-button:hover {
+            color: #4338ca;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 32px 0;
+            color: #6b7280;
+        }
+        
+        .footer {
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            padding: 16px 24px;
+            text-align: center;
+        }
+        
+        .footer p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Tìm Kiếm Thuốc</h1>
+            <p>Tra cứu thông tin và tìm kiếm thuốc phù hợp</p>
+        </div>
+        
+        <div class="search-section">
+            <form id="searchForm" class="search-form">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Nhập tên thuốc cần tìm..." 
+                />
+                <button type="submit" class="search-button">Tìm Kiếm</button>
+            </form>
+            <div class="labels-container" id="labelsContainer">
+                <div class="label-tag" data-category="Trầm cảm">Trầm cảm</div>
+                <div class="label-tag" data-category="Giảm đau">Giảm đau</div>
+                <div class="label-tag" data-category="Kháng viêm">Kháng viêm</div>
+                <div class="label-tag" data-category="Tất cả">Tất cả</div>
+            </div>
+        </div>
+        <div class="results-section">
+            <h2 class="results-title">Kết Quả Tìm Kiếm</h2>
+            <div id="resultsContainer" class="results-grid">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Luôn tham khảo ý kiến bác sĩ trước khi sử dụng bất kỳ loại thuốc nào.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchForm = document.getElementById('searchForm');
+            const searchInput = document.getElementById('searchInput');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const labelsContainer = document.getElementById('labelsContainer');
+    
+            let activeCategory = null;
+    
+            // Tìm kiếm chỉ khi bấm nút
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                performSearch();
+            });
+    
+            // Khi click vào nhãn, cập nhật input và tìm kiếm lại
+            labelsContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('label-tag')) {
+                    const category = e.target.getAttribute('data-category');
+    
+                    document.querySelectorAll('#labelsContainer .label-tag').forEach(tag => tag.classList.remove('active'));
+    
+                    if (category === 'Tất cả') {
+                        activeCategory = null;
+                        searchInput.value = '';
+                    } else {
+                        activeCategory = category;
+                        e.target.classList.add('active');
+                        searchInput.value = category;
+                    }
+    
+                    performSearch();
+                }
+            });
+    
+            async function performSearch() {
+                const query = searchInput.value.trim();
+                if (!query) {
+                    resultsContainer.innerHTML = '<div class="no-results">Hãy nhập tên thuốc hoặc chọn danh mục.</div>';
+                    return;
+                }
+    
+                let apiUrl = `http://localhost:8000/medications?query=${encodeURIComponent(query)}`;
+    
+                try {
+                    resultsContainer.innerHTML = '<div class="no-results">Đang tìm kiếm...</div>';
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error('Lỗi API');
+                    const medsArray = await response.json();
+                    displayMedications(medsArray);
+                } catch (error) {
+                    resultsContainer.innerHTML = '<div class="no-results">Không thể tải dữ liệu.</div>';
+                    console.error(error);
+                }
+            }
+    
+            function displayMedications(medsArray) {
+                resultsContainer.innerHTML = '';
+    
+                if (!medsArray.length) {
+                    resultsContainer.innerHTML = '<div class="no-results">Không tìm thấy thuốc phù hợp</div>';
+                    return;
+                }
+    
+                medsArray.forEach(med => {
+                    const card = document.createElement('div');
+                    card.className = 'medication-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <div class="med-icon">
+                                <img src="${med.image_url}" alt="${med.name}" />
+                            </div>
+                            <div class="med-info">
+                                <div class="med-name">${med.name}</div>
+                                <div class="med-category">${med.composition}</div>
+                            </div>
+                        </div>
+                        <div class="med-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Sử dụng</span>
+                                <span class="detail-value">${med.uses || 'Chưa có'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Tác dụng phụ</span>
+                                <span class="detail-value">${med.side_effects || 'Chưa có'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Nhà sản xuất</span>
+                                <span class="detail-value">${med.manufacturer || 'Chưa có'}</span>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+            }
+    
+            // Tải tất cả thuốc khi load trang
+            performSearch();
+        });
+    </script>
+    
+</body>
+</html>
