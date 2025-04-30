@@ -6,7 +6,7 @@
    - Ensure you have Python 3.13 installed.
    - Create a virtual environment:
      ```
-     python3.13 -m venv venv
+     python3 -m venv venv
      ```
    - Activate the virtual environment:
      - On macOS/Linux:
