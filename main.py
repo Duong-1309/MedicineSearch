@@ -4,10 +4,11 @@
 # - search_engine.py: Query from SQLite -> Search vector
 # - api.py: FastAPI chat API
 
-from fastapi import FastAPI, Request, Form
-from pydantic import BaseModel
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
+
 from search_engine import MedicineSearchEngine
 
 app = FastAPI()
