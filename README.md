@@ -27,7 +27,7 @@
 3. **Initialize Database and Vectorize Data**
    - Run the following command to initialize the database and vectorize data:
      ```
-     python vectorize.py
+     python vectorizer.py
      ```
 
 4. **Run the Project**
