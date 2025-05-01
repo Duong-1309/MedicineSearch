@@ -83,3 +83,4 @@ watchfiles==1.0.5
 websockets==15.0.1
 sentence-transformers==4.1.0
 pandas==2.2.3
+fastapi[standard]==0.115.12
