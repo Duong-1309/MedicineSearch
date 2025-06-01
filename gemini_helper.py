@@ -1,6 +1,9 @@
 import google.generativeai as genai
 import os, json
-genai.configure(api_key=os.environ.get("GEMINI_KEY"))
+from dotenv import load_dotenv
+
+load_dotenv(".env")
+genai.configure(api_key=os.environ.get("GEMINI_KEY", "AIzaSyDYo8DACHJKhZEgacClZvbikfTRz3wJbro"))
 
 def parse_query_dimensions(question: str) -> str:
     model = genai.GenerativeModel('gemini-2.0-flash')
