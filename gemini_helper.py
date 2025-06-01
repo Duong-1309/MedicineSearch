@@ -3,7 +3,7 @@ import os, json
 from dotenv import load_dotenv
 
 load_dotenv(".env")
-genai.configure(api_key=os.environ.get("GEMINI_KEY", "AIzaSyDYo8DACHJKhZEgacClZvbikfTRz3wJbro"))
+genai.configure(api_key=os.environ.get("GEMINI_KEY"))
 
 def parse_query_dimensions(question: str) -> str:
     model = genai.GenerativeModel('gemini-2.0-flash')
