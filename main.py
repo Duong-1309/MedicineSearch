@@ -41,5 +41,10 @@ async def chat_submit(request: Request, query: str):
     data = search_engine.search_with_llm(query)
     return data
 
+@app.get("/recommendations", response_class=JSONResponse)
+async def recommend_keywords(request: Request, query: str):
+    keywords = search_engine.recommend_keywords(query)
+    return {"keywords": keywords}
+
 # Run server with:
 # uvicorn api:app --reload
