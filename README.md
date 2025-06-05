@@ -35,3 +35,9 @@
      ```
      fastapi dev
      ```
+
+## New Features
+
+- **Recommendation Keywords**
+  - Endpoint: `/recommendations?query=your+search`
+  - Returns a list of suggested keywords extracted from the top matched medicines to help refine your search.

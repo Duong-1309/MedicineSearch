@@ -5,6 +5,8 @@ import pickle
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from gemini_helper import parse_query_dimensions, summarize_results, translate_results
+from collections import Counter
+import re
 
 DB_PATH = './medicine.db'
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -67,7 +69,27 @@ class MedicineSearchEngine:
                 if result['id'] == _result_trans['id']:
                     result['uses'] = _result_trans['uses']
                     result['side_effects'] = _result_trans['side_effects']
-        return results   
+        return results
+
+    def recommend_keywords(self, query: str, num_keywords: int = 5) -> list[str]:
+        """Return recommended keywords extracted from top search results."""
+        results = self.search(query, top_k=20)
+        text = " ".join([r.get("uses", "") or "" for r in results])
+        tokens = re.findall(r"[A-Za-z]+", text.lower())
+        stopwords = {
+            "and",
+            "or",
+            "of",
+            "the",
+            "to",
+            "with",
+            "for",
+            "in",
+            "a",
+            "an",
+        }
+        freq = Counter(t for t in tokens if t not in stopwords)
+        return [word for word, _ in freq.most_common(num_keywords)]
         
 
     def search_with_llm(self, question, top_k=6):
